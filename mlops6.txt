@@ -1,0 +1,53 @@
+import os
+import seaborn as sns
+import matplotlib.pyplot as plt
+from sklearn.datasets import load_breast_cancer
+from sklearn.model_selection import train_test_split
+from sklearn.linear_model import LogisticRegression
+from sklearn.tree import DecisionTreeClassifier
+from sklearn.metrics import confusion_matrix
+
+# Create results/ folder if not present
+os.makedirs("results", exist_ok=True)
+
+# Load dataset
+data = load_breast_cancer()
+X = data.data
+y = data.target
+labels = data.target_names
+
+# Split the data
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+
+# Train models
+logreg = LogisticRegression(max_iter=200)
+tree = DecisionTreeClassifier()
+
+logreg.fit(X_train, y_train)
+tree.fit(X_train, y_train)
+
+# Predictions
+y_pred_logreg = logreg.predict(X_test)
+y_pred_tree = tree.predict(X_test)
+
+# Confusion matrices
+cm_logreg = confusion_matrix(y_test, y_pred_logreg)
+cm_tree = confusion_matrix(y_test, y_pred_tree)
+
+# Heatmap for Logistic Regression
+plt.figure(figsize=(6, 4))
+sns.heatmap(cm_logreg, annot=True, fmt='d', cmap='Blues', xticklabels=labels, yticklabels=labels)
+plt.title("Confusion Matrix - Logistic Regression")
+plt.xlabel("Predicted")
+plt.ylabel("Actual")
+plt.savefig("results/cm_logistic_heatmap.png")
+plt.close()
+
+# Heatmap for Decision Tree
+plt.figure(figsize=(6, 4))
+sns.heatmap(cm_tree, annot=True, fmt='d', cmap='Greens', xticklabels=labels, yticklabels=labels)
+plt.title("Confusion Matrix - Decision Tree")
+plt.xlabel("Predicted")
+plt.ylabel("Actual")
+plt.savefig("results/cm_tree_heatmap.png")
+plt.close()

@@ -1,0 +1,55 @@
+import pandas as pd
+import seaborn as sns
+import matplotlib.pyplot as plt
+from sklearn.datasets import load_wine
+from matplotlib.backends.backend_pdf import PdfPages
+
+# Load the Wine dataset from sklearn
+wine = load_wine()
+df = pd.DataFrame(wine.data, columns=wine.feature_names)
+df['target'] = wine.target
+
+# --- Data Overview ---
+print(df.info())
+print(df.describe())
+
+# --- Data Cleaning ---
+# (Wine dataset has no missing values, but check anyway)
+print(df.isnull().sum())
+
+# --- PDF to save all plots ---
+pdf_path = "Wine_EDA_Visualizations.pdf"
+pdf = PdfPages(pdf_path)
+
+# --- Visualization 1: Target Count ---
+plt.figure(figsize=(6, 4))
+sns.countplot(x='target', data=df)
+plt.title("Target Class Distribution")
+pdf.savefig()
+plt.close()
+
+# --- Visualization 2: Alcohol Distribution ---
+plt.figure(figsize=(6, 4))
+sns.histplot(df['alcohol'], kde=True, bins=20)
+plt.title("Alcohol Content Distribution")
+pdf.savefig()
+plt.close()
+
+# --- Visualization 3: Correlation Heatmap ---
+plt.figure(figsize=(12, 10))
+sns.heatmap(df.corr(), annot=True, cmap='coolwarm', fmt=".2f")
+plt.title("Correlation Heatmap")
+pdf.savefig()
+plt.close()
+
+# --- Visualization 4: Outliers using Boxplot (e.g., Malic acid) ---
+plt.figure(figsize=(6, 4))
+sns.boxplot(x=df['malic_acid'])
+plt.title("Outliers in Malic Acid")
+pdf.savefig()
+plt.close()
+
+# --- Close the PDF ---
+pdf.close()
+
+print(f"EDA plots saved to: {pdf_path}")

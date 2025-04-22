@@ -1,0 +1,22 @@
+#Virtual Environment
+
+python -m venv mlops
+mlops/Scripts/activate
+
+#create a text file named requirement and write all the library names
+
+pip install -r requirements.txt
+
+#Open VScode
+
+code .
+
+#Write the basic ml program
+
+git init
+git add.
+git commit -m "First Commit"
+git branch -M main
+git remote add origin https://github.com/username/repo_name.git
+git push -u origin main
+
